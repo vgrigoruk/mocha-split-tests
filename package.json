@@ -1,0 +1,40 @@
+{
+  "name": "@peakon/mocha-split-tests",
+  "version": "0.0.1",
+  "description": "Distribute mocha specs between concurrent test machines / containers on CI based on previously-recorded test runtime",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "bin": {
+    "mocha-split-tests": "./bin/mocha-split-tests"
+  },
+  "keywords": [
+    "mocha",
+    "test",
+    "suite",
+    "parallelisation",
+    "testing",
+    "test",
+    "CI",
+    "automation",
+    "parallelisation"
+  ],
+  "author": "Peakon",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^4.1.0",
+    "glob": "^7.1.6"
+  },
+  "devDependencies": {
+    "jest": "^25.1.0",
+    "prettier": "^1.19.1"
+  },
+  "prettier": {},
+  "jest": {
+    "collectCoverageFrom": [
+      "*.js"
+    ]
+  }
+}

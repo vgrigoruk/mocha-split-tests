@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`utils distributeByRuntime evenly distributes test files between buckets 1`] = `
+Array [
+  Object {
+    "files": Array [
+      "9",
+      "2",
+      "1",
+    ],
+    "runtime": 1200,
+  },
+  Object {
+    "files": Array [
+      "8",
+      "3",
+    ],
+    "runtime": 1100,
+  },
+  Object {
+    "files": Array [
+      "7",
+      "4",
+    ],
+    "runtime": 1100,
+  },
+  Object {
+    "files": Array [
+      "6",
+      "5",
+    ],
+    "runtime": 1100,
+  },
+]
+`;
+
+exports[`utils loadRuntimeStats when runtime.log contains malformed rows loads only well-formed rows from file 1`] = `
+Map {
+  "test/controllers/application_controller.spec.js" => 5084,
+  "test/models/user.spec.js" => 5084,
+  "test/does-not-exist-anymore.spec.js" => 234,
+}
+`;
+
+exports[`utils loadRuntimeStats when runtime.log has no malformed rows loads all stats from a well-formed file 1`] = `
+Map {
+  "test/controllers/application_controller.spec.js" => 5084,
+  "test/models/user.spec.js" => 5084,
+  "test/models/company.spec.js" => 1234,
+  "test/routers/foo.spec.js" => 20,
+  "test/config/config.spec.js" => 345,
+  "test/models/account.spec.js" => 2435,
+  "test/routers/bar.spec.js" => 20,
+  "test/config/buz.spec.js" => 345,
+  "test/models/aaa.spec.js" => 2435,
+  "test/does-not-exist-anymore.spec.js" => 234,
+  "test/does-not-exist-anymore_2.spec.js" => 234234,
+}
+`;

@@ -1,0 +1,11 @@
+test/controllers/application_controller.spec.js:5084
+test/models/user.spec.js:5084
+test/models/company.spec.js:1234
+test/routers/foo.spec.js:20
+test/config/config.spec.js:345
+test/models/account.spec.js:2435
+test/routers/bar.spec.js:20
+test/config/buz.spec.js:345
+test/models/aaa.spec.js:2435
+test/does-not-exist-anymore.spec.js:234
+test/does-not-exist-anymore_2.spec.js:234234

@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+
+"use strict";
+
+const cli = require("../cli");
+const result = cli.run();
+console.log(result);

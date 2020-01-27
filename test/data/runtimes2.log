@@ -1,0 +1,8 @@
+test/controllers/application_controller.spec.js:5084
+test/models/user.spec.js:5084
+test/models/company.spec.js:-100
+test/models/accounts.spec.js:
+test/models/account.spec.js:adsfasd
+
+
+test/does-not-exist-anymore.spec.js:234
