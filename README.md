@@ -10,11 +10,11 @@ Usage: mocha-split-tests [options]
 
 Options:
   -V, --version                   output the version number
-  -t, --total-groups <int>         Total number of test runner machines / containers
-  -g, --group-number <int>         Number of group to get tests for (starts from 0)
+  -t, --total-groups <int>        Total number of test runner machines / containers
+  -g, --group-number <int>        Number of group to get tests for (starts from 0)
   -r, --runtime-log [path]        Location of previously recorded test runtimes
   -f, --file-pattern '[pattern]'  e.g. "test/**/*.spec.js"
-  -s, --resultSeparator          default: " "
+  -s, --result-separator          default: " "
   -h, --help                      output usage information
 ```
 
