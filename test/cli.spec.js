@@ -8,7 +8,7 @@ describe("cli", function() {
       "-t",
       "3",
       "-g",
-      "0",
+      "2",
       "-r",
       "test/data/fakeSpecs/runtime.log",
       "-f",
