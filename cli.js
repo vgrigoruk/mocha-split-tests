@@ -14,12 +14,12 @@ module.exports = {
     program
       .version(version)
       .requiredOption(
-        "-t, --totalGroups <int>",
+        "-t, --total-groups <int>",
         "Total number of test runner machines / containers",
         parseIntValue
       )
       .requiredOption(
-        "-g, --groupNumber <int>",
+        "-g, --group-number <int>",
         "Number of group to get tests for (starts from 0)",
         parseIntValue
       )
@@ -28,10 +28,14 @@ module.exports = {
         "Location of previously recorded test runtimes"
       )
       .requiredOption(
-        '-f, --file-pattern "<pattern>"',
+        "-f, --file-pattern <pattern>",
         'e.g. "test/**/*.spec.js"'
       )
-      .option("-rs, --resultSeparator", 'default: " "', " ");
+      .option(
+        "-s, --result-separator <symbol>",
+        "Separator for resulting output",
+        " "
+      );
 
     const {
       filePattern,
