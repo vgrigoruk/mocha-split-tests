@@ -36,40 +36,60 @@ module.exports = {
     if (files.length === 0) {
       throw `No files matching a pattern: ${pattern}`;
     }
-    return files;
+    return files.map(f => {
+      return { path: f, size: fs.statSync(f).size };
+    });
   },
 
   addKnownRuntimes(testFiles, runtimeStats) {
-    return testFiles.map(file => {
-      const runtime = runtimeStats.get(file) || 0;
-      return [file, runtime];
+    return testFiles.map(function({ path, size }) {
+      return { path, size, runtime: runtimeStats.get(path) };
     });
   },
 
   distributeByRuntime({ testFiles, runtimeStats, totalGroups }) {
-    const filesWithRuntimes = module.exports.addKnownRuntimes(
+    const filesWithStats = module.exports.addKnownRuntimes(
       testFiles,
       runtimeStats
     );
-    const sortedFilesWithRuntimes = filesWithRuntimes.sort(
-      (a, b) => b[1] - a[1]
-    );
+
+    const filesWithMissingRuntimes = filesWithStats.filter(function({
+      runtime
+    }) {
+      return typeof runtime === "undefined";
+    });
+
+    let backlog;
+    if (filesWithMissingRuntimes.length / filesWithStats.length > 0.1) {
+      backlog = filesWithStats.map(function(f) {
+        return [f.path, f.size];
+      });
+    } else {
+      backlog = filesWithStats.map(function(f) {
+        return [f.path, f.runtime || 0];
+      });
+    }
+
+    const sortedFilesWithStats = backlog.sort((a, b) => b[1] - a[1]);
+
     function createBuckets(totalGroups) {
       const buckets = [];
       for (let i = 0; i < totalGroups; i++) {
-        buckets.push({ runtime: 0, files: [] });
+        buckets.push({ size: 0, files: [] });
       }
       return buckets;
     }
+
     function nextBucket(buckets) {
-      const minRuntime = Math.min(...buckets.map(b => b.runtime));
-      return buckets.find(bucket => bucket.runtime === minRuntime);
+      const minBucketSize = Math.min(...buckets.map(b => b.size));
+      return buckets.find(bucket => bucket.size === minBucketSize);
     }
+
     const buckets = createBuckets(totalGroups);
-    for (let i = 0; i < sortedFilesWithRuntimes.length; i++) {
-      const [file, runtime] = sortedFilesWithRuntimes[i];
+    for (let i = 0; i < sortedFilesWithStats.length; i++) {
+      const [file, size] = sortedFilesWithStats[i];
       const bucket = nextBucket(buckets);
-      bucket.runtime += runtime;
+      bucket.size += size;
       bucket.files.push(file);
     }
     return buckets;

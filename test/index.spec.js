@@ -7,7 +7,7 @@ const {
   distributeByRuntime
 } = require("../index");
 
-describe("utils", function() {
+describe("index", function() {
   describe("listFiles", function() {
     it("should fail when no files are found", function() {
       const pattern = "**/doesnotexist/*.js";
@@ -17,9 +17,7 @@ describe("utils", function() {
     });
 
     it("should return files when pattern is correct", function() {
-      expect(listFiles("*.json")).toEqual(
-        expect.arrayContaining(["package.json", "package-lock.json"])
-      );
+      expect(listFiles("test/data/**/*.spec")).toMatchSnapshot();
     });
   });
 
@@ -53,42 +51,85 @@ describe("utils", function() {
 
   describe("addKnownRuntimes", function() {
     it("adds runtime stats to test backlog", function() {
-      const testBacklog = [
-        "test/1.spec.js",
-        "test/2.spec.js",
-        "test/3.spec.js"
+      const testFiles = [
+        { path: "test/1.spec.js", size: 1 },
+        { path: "test/2.spec.js", size: 2 },
+        { path: "test/3.spec.js", size: 3 }
       ];
       const runtimeStats = new Map()
         .set("test/1.spec.js", 100)
         .set("test/2.spec.js", 200)
         .set("test/4.spec.js", 400);
-      expect(addKnownRuntimes(testBacklog, runtimeStats)).toEqual([
-        ["test/1.spec.js", 100],
-        ["test/2.spec.js", 200],
-        ["test/3.spec.js", 0]
+      expect(addKnownRuntimes(testFiles, runtimeStats)).toEqual([
+        { path: "test/1.spec.js", size: 1, runtime: 100 },
+        { path: "test/2.spec.js", size: 2, runtime: 200 },
+        { path: "test/3.spec.js", size: 3, runtime: undefined }
       ]);
     });
   });
 
   describe("distributeByRuntime", function() {
-    it("evenly distributes test files between buckets", async function() {
-      const runtimeStats = new Map()
-        .set("1", 100)
-        .set("2", 200)
-        .set("3", 300)
-        .set("4", 400)
-        .set("5", 500)
-        .set("6", 600)
-        .set("7", 700)
-        .set("8", 800)
-        .set("9", 900);
-      const testFiles = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-      const result = await distributeByRuntime({
-        testFiles,
-        runtimeStats,
-        totalGroups: 4
+    describe("when more than 90% of runtime stats are available", function() {
+      it("distributes test based on runtime", async function() {
+        const runtimeStats = new Map()
+          .set("1", 100)
+          .set("2", 200)
+          .set("3", 300)
+          .set("4", 400)
+          .set("5", 500)
+          .set("6", 600)
+          .set("7", 700)
+          .set("8", 800)
+          .set("9", 900);
+        const testFiles = [
+          { path: "1", size: 1 },
+          { path: "2", size: 2 },
+          { path: "3", size: 3 },
+          { path: "4", size: 4 },
+          { path: "5", size: 5 },
+          { path: "6", size: 6 },
+          { path: "7", size: 7 },
+          { path: "8", size: 8 },
+          { path: "9", size: 9 }
+        ];
+        const result = await distributeByRuntime({
+          testFiles,
+          runtimeStats,
+          totalGroups: 4
+        });
+        expect(result).toMatchSnapshot();
       });
-      expect(result).toMatchSnapshot();
+    });
+
+    describe("when less than 90% of runtime stats are available", function() {
+      it("distributes test files between buckets based on file size", async function() {
+        const runtimeStats = new Map()
+          .set("1", 100)
+          .set("2", 200)
+          .set("3", 300)
+          .set("4", 400)
+          .set("5", 500)
+          .set("6", 600)
+          .set("7", 700)
+          .set("8", 800);
+        const testFiles = [
+          { path: "1", size: 1 },
+          { path: "2", size: 2 },
+          { path: "3", size: 3 },
+          { path: "4", size: 4 },
+          { path: "5", size: 5 },
+          { path: "6", size: 6 },
+          { path: "7", size: 7 },
+          { path: "8", size: 8 },
+          { path: "9", size: 9 }
+        ];
+        const result = await distributeByRuntime({
+          testFiles,
+          runtimeStats,
+          totalGroups: 4
+        });
+        expect(result).toMatchSnapshot();
+      });
     });
   });
 });

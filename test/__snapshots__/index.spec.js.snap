@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`utils distributeByRuntime evenly distributes test files between buckets 1`] = `
+exports[`index distributeByRuntime when less than 90% of runtime stats are available distributes test files between buckets based on file size 1`] = `
 Array [
   Object {
     "files": Array [
@@ -8,33 +8,88 @@ Array [
       "2",
       "1",
     ],
-    "runtime": 1200,
+    "size": 12,
   },
   Object {
     "files": Array [
       "8",
       "3",
     ],
-    "runtime": 1100,
+    "size": 11,
   },
   Object {
     "files": Array [
       "7",
       "4",
     ],
-    "runtime": 1100,
+    "size": 11,
   },
   Object {
     "files": Array [
       "6",
       "5",
     ],
-    "runtime": 1100,
+    "size": 11,
   },
 ]
 `;
 
-exports[`utils loadRuntimeStats when runtime.log contains malformed rows loads only well-formed rows from file 1`] = `
+exports[`index distributeByRuntime when more than 90% of runtime stats are available distributes test based on runtime 1`] = `
+Array [
+  Object {
+    "files": Array [
+      "9",
+      "2",
+      "1",
+    ],
+    "size": 1200,
+  },
+  Object {
+    "files": Array [
+      "8",
+      "3",
+    ],
+    "size": 1100,
+  },
+  Object {
+    "files": Array [
+      "7",
+      "4",
+    ],
+    "size": 1100,
+  },
+  Object {
+    "files": Array [
+      "6",
+      "5",
+    ],
+    "size": 1100,
+  },
+]
+`;
+
+exports[`index listFiles should return files when pattern is correct 1`] = `
+Array [
+  Object {
+    "path": "test/data/fakeSpecs/2.spec",
+    "size": 2,
+  },
+  Object {
+    "path": "test/data/fakeSpecs/3.spec",
+    "size": 3,
+  },
+  Object {
+    "path": "test/data/fakeSpecs/4.spec",
+    "size": 4,
+  },
+  Object {
+    "path": "test/data/fakeSpecs/specs/1.spec",
+    "size": 1,
+  },
+]
+`;
+
+exports[`index loadRuntimeStats when runtime.log contains malformed rows loads only well-formed rows from file 1`] = `
 Map {
   "test/controllers/application_controller.spec.js" => 5084,
   "test/models/user.spec.js" => 5084,
@@ -42,7 +97,7 @@ Map {
 }
 `;
 
-exports[`utils loadRuntimeStats when runtime.log has no malformed rows loads all stats from a well-formed file 1`] = `
+exports[`index loadRuntimeStats when runtime.log has no malformed rows loads all stats from a well-formed file 1`] = `
 Map {
   "test/controllers/application_controller.spec.js" => 5084,
   "test/models/user.spec.js" => 5084,
