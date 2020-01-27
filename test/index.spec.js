@@ -40,11 +40,8 @@ describe("index", function() {
 
     describe("when runtime.log does not exist", function() {
       it("should fail with error", async function() {
-        await expect(
-          loadRuntimeStats("/invalid/path/to/runtime.log")
-        ).rejects.toMatch(
-          "no such file or directory, open '/invalid/path/to/runtime.log'"
-        );
+        const stats = await loadRuntimeStats("/invalid/path/to/runtime.log");
+        expect(stats.size).toEqual(0);
       });
     });
   });

@@ -10,8 +10,8 @@ module.exports = {
     return new Promise(function(resolve, reject) {
       const readStream = fs
         .createReadStream(runtimeLog)
-        .on("error", function(error) {
-          reject(error.message);
+        .on("error", function() {
+          resolve(runtimes); // fail silently and return an empty Map
         });
       readline
         .createInterface({
