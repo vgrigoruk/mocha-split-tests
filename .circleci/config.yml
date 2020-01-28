@@ -46,7 +46,7 @@ jobs:
           name: Publish to NPM
           command: |
             export NPM_TOKEN=${NPM_PUBLISH_TOKEN}
-            npm publish --unsafe-perm
+            npm publish --unsafe-perm --access public
 workflows:
   version: 2
   build-and-publish:
