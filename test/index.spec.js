@@ -3,7 +3,7 @@
 const {
   listFiles,
   loadRuntimeStats,
-  addKnownRuntimes,
+  attachRuntimesToFiles,
   distributeByRuntime
 } = require("../lib/index");
 
@@ -23,24 +23,24 @@ describe("index", function() {
 
   describe("loadRuntimeStats", function() {
     describe("when runtime.log contains malformed rows", function() {
-      it("loads only well-formed rows from file", async function() {
-        const stats = await loadRuntimeStats("./test/data/runtimes2.log");
+      it("loads only well-formed rows from file", function() {
+        const stats = loadRuntimeStats("./test/data/runtimes2.log");
         expect(stats.size).toEqual(3);
         expect(stats).toMatchSnapshot();
       });
     });
 
     describe("when runtime.log has no malformed rows", function() {
-      it("loads all stats from a well-formed file", async function() {
-        const stats = await loadRuntimeStats("./test/data/runtimes1.log");
+      it("loads all stats from a well-formed file", function() {
+        const stats = loadRuntimeStats("./test/data/runtimes1.log");
         expect(stats.size).toEqual(11);
         expect(stats).toMatchSnapshot();
       });
     });
 
     describe("when runtime.log does not exist", function() {
-      it("should fail with error", async function() {
-        const stats = await loadRuntimeStats("/invalid/path/to/runtime.log");
+      it("should not fail with error", function() {
+        const stats = loadRuntimeStats("/invalid/path/to/runtime.log");
         expect(stats.size).toEqual(0);
       });
     });
@@ -57,17 +57,17 @@ describe("index", function() {
         .set("test/1.spec.js", 100)
         .set("test/2.spec.js", 200)
         .set("test/4.spec.js", 400);
-      expect(addKnownRuntimes(testFiles, runtimeStats)).toEqual([
+      expect(attachRuntimesToFiles(testFiles, runtimeStats)).toEqual([
         { path: "test/1.spec.js", size: 1, runtime: 100 },
         { path: "test/2.spec.js", size: 2, runtime: 200 },
-        { path: "test/3.spec.js", size: 3, runtime: undefined }
+        { path: "test/3.spec.js", size: 3, runtime: 0 }
       ]);
     });
   });
 
   describe("distributeByRuntime", function() {
     describe("when more than 90% of runtime stats are available", function() {
-      it("distributes test based on runtime", async function() {
+      it("distributes test based on runtime", function() {
         const runtimeStats = new Map()
           .set("1", 100)
           .set("2", 200)
@@ -77,8 +77,7 @@ describe("index", function() {
           .set("6", 600)
           .set("7", 700)
           .set("8", 800)
-          .set("9", 900)
-          .set("10", 1000);
+          .set("9", 900);
         const testFiles = [
           { path: "1", size: 1 },
           { path: "2", size: 2 },
@@ -89,10 +88,9 @@ describe("index", function() {
           { path: "7", size: 7 },
           { path: "8", size: 8 },
           { path: "9", size: 9 },
-          { path: "10", size: 10 },
-          { path: "11", size: 11 }
+          { path: "10", size: 10 }
         ];
-        const result = await distributeByRuntime({
+        const result = distributeByRuntime({
           testFiles,
           runtimeStats,
           totalGroups: 4
@@ -102,7 +100,7 @@ describe("index", function() {
     });
 
     describe("when less than 90% of runtime stats are available", function() {
-      it("distributes test files between buckets based on file size", async function() {
+      it("distributes test files between buckets based on file size", function() {
         const runtimeStats = new Map()
           .set("1", 100)
           .set("2", 200)
@@ -123,7 +121,7 @@ describe("index", function() {
           { path: "8", size: 8 },
           { path: "9", size: 9 }
         ];
-        const result = await distributeByRuntime({
+        const result = distributeByRuntime({
           testFiles,
           runtimeStats,
           totalGroups: 4
