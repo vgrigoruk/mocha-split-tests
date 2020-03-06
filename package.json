@@ -2,6 +2,10 @@
   "name": "@peakon/mocha-split-tests",
   "version": "1.1.0",
   "description": "Distribute mocha specs between concurrent test machines / containers on CI based on previously-recorded test runtime",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:peakon/mocha-split-tests.git"
+  },
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
