@@ -95,6 +95,13 @@ function getSpecs(totalGroups, groupNumber) {
 }
 ```
 
+## Releasing new version
+
+```bash
+npm version <major | minor | patch>
+git push --tags
+```
+
 ## License
 
 MIT
