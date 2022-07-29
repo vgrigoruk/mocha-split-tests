@@ -1,7 +1,7 @@
 version: 2
 aliases:
   - &docker_image
-     - image: library/node:11.6.0
+     - image: library/node:18.5.0
 
   - &restore_npm_cache
     keys:
