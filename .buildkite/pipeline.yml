@@ -1,0 +1,58 @@
+plugins:
+  - &docker_plugin_version
+    docker#v3.5.0
+
+  - &docker_plugin_test
+    *docker_plugin_version: &docker_plugin_config
+      image: public.ecr.aws/peakon/node:18.5.0-buster-ci
+      propagate-environment: true
+      user: 'buildkite-agent'
+      environment:
+        - NPM_TOKEN
+
+  - &docker_plugin_publish
+    *docker_plugin_version:
+      <<: *docker_plugin_config
+      environment:
+        - NPM_PUBLISH_TOKEN
+
+steps:
+  - label: "test"
+    key: test
+    env:
+      MOCHA_FILE: "junit/test-results.xml"
+    command:
+      - npm install --no-audit
+      - npm test
+      - npm run lint
+    artifact_paths: "junit/*.xml"
+    plugins:
+      - *docker_plugin_test
+      - peakon/s3-cache#v2.2.1:
+          save:
+            - key: 'v1-node-modules-{{ checksum "package.json" }}'
+              paths: [ "node_modules" ]
+          restore:
+            - keys:
+                - 'v1-node-modules-{{ checksum "package.json" }}'
+      - peakon/test-summary#v2.0.1-pre:
+          inputs:
+            - label: test-results
+              artifact_path: junit/*.xml
+              type: junit
+          formatter:
+            type: details
+
+  - label: "publish"
+    key: publish
+    depends_on: test
+    agents:
+      queue: deploy
+    if: build.tag =~ /^v[0-9]+\.[0-9]+\.[0-9]+-?.*\$/
+    command: "NPM_TOKEN=$${NPM_PUBLISH_TOKEN} npm publish --unsafe-perm"
+    plugins:
+      - *docker_plugin_publish
+      - peakon/s3-cache#v2.2.1:
+            restore:
+                - keys:
+                    - 'v1-node-modules-{{ checksum "package.json" }}'
