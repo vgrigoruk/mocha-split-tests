@@ -39,11 +39,6 @@
     "jest": "^25.1.0",
     "prettier": "^1.19.1"
   },
-  "peerDependencies": {
-    "mocha": ">=6",
-    "@wdio/reporter": ">=5"
-  },
-  "prettier": {},
   "eslintConfig": {
     "extends": [
       "prettier"

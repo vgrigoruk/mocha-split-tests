@@ -74,14 +74,6 @@ Options:
   -h, --help                       output usage information
 ```
 
-Here is an example how to launch test on CircleCI:
-
-```bash
-export SPEC_FILES=$(npx mocha-split-tests -t $CIRCLE_NODE_TOTAL -g $CIRCLE_NODE_INDEX -r ./runtime.log -f 'test/**/*.spec.js')
-
-./node_modules/.bin/mocha $SPEC_FILES
-```
-
 ## Node API
 
 ```js
